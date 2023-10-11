@@ -30,6 +30,7 @@ void trie_reset(TrieNode *root) {
     if (root->children[i] != NULL) {
       trie_reset(root->children[i]);
       trie_node_delete(root->children[i]);
+      root->children[i] = NULL;
     }
   }
   return;

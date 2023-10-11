@@ -75,4 +75,3 @@ void wt_delete(WordTable *wt) {
   free(wt);
   return;
 }
-

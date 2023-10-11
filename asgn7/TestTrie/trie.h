@@ -2,7 +2,7 @@
 
 #ifndef __TRIE_H__
 #define __TRIE_H__
-#include "util.h"
+//#include "util.h"
 #include <inttypes.h>
 
 #define ALPHABET 256
