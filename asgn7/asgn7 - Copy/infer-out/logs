@@ -1,0 +1,185 @@
+[31178][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31178][environment] No .inferconfig file found
+[31178][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31178][environment] INFER_ARGS =   command line arguments:   infer-capture -- makeActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31178][environment] Infer log identifier is 
+Infer version v0.16.0-1172e6d
+[31178][environment] Copyright 2009 - present Facebook. All Rights Reserved.
+[31178][environment] 
+[31178][   progress] Capturing in make/cc mode...
+[31178][environment] Running command make with env:
+[31178][environment] SHELL=/bin/bash 
+[31178][environment] _=/opt/rh/devtoolset-8/root/usr/bin/make 
+[31178][environment] XDG_CONFIG_DIRS=/etc/xdg 
+[31178][environment] HISTCONTROL=ignoredups 
+[31178][environment] XDG_DATA_DIRS=/usr/local/share/:/usr/share/ 
+[31178][environment] LC_COLLATE=C 
+[31178][environment] QT_PLUGIN_PATH=/usr/lib64/kde4/plugins:/usr/lib/kde4/plugins 
+[31178][environment] INFOPATH=/opt/rh/devtoolset-8/root/usr/share/info:/usr/local/texlive/2017/texmf-dist/doc/info 
+[31178][environment] LESSOPEN=||/usr/bin/lesspipe.sh %s 
+[31178][environment] KRB5CCNAME=KEYRING:persistent:239594 
+[31178][environment] SSH_CONNECTION=100.64.77.18 49745 128.114.104.54 22 
+[31178][environment] QT_GRAPHICSSYSTEM_CHECKED=1 
+[31178][environment] SSH_TTY=/dev/pts/2 
+[31178][environment] XDG_RUNTIME_DIR=/run/user/239594 
+[31178][environment] ANDROID_HOME=/usr/local/android-sdk 
+[31178][environment] HOSTNAME=unix1.lt.ucsc.edu 
+[31178][environment] LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.axa=01;36:*.oga=01;36:*.spx=01;36:*.xspf=01;36: 
+[31178][environment] KDEDIRS=/usr 
+[31178][environment] EXELIS_DIR=/usr/local/envi 
+[31178][environment] PWD=/afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7 
+[31178][environment] PKG_CONFIG_PATH=/opt/rh/llvm-toolset-7/root/usr/lib64/pkgconfig:/opt/rh/devtoolset-8/root/usr/lib64/pkgconfig 
+[31178][environment] MANPATH=/opt/rh/llvm-toolset-7/root/usr/share/man:/opt/rh/devtoolset-8/root/usr/share/man: 
+[31178][environment] HOME=/afs/cats.ucsc.edu/users/m/vrivera7 
+[31178][environment] LD_LIBRARY_PATH=/opt/rh/llvm-toolset-7/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib:/opt/rh/devtoolset-8/root/usr/lib64/dyninst:/opt/rh/devtoolset-8/root/usr/lib/dyninst:/opt/rh/devtoolset-8/root/usr/lib64:/opt/rh/devtoolset-8/root/usr/lib 
+[31178][environment] PERL5LIB=/opt/rh/devtoolset-8/root//usr/lib64/perl5/vendor_perl:/opt/rh/devtoolset-8/root/usr/lib/perl5:/opt/rh/devtoolset-8/root//usr/share/perl5/vendor_perl 
+[31178][environment] LOGNAME=vrivera7 
+[31178][environment] PCP_DIR=/opt/rh/devtoolset-8/root 
+[31178][environment] SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass 
+[31178][environment] GNUPLOT_DEFAULT_GDFONT=LiberationSans-Regular 
+[31178][environment] SHLVL=1 
+[31178][environment] XDG_SESSION_ID=350 
+[31178][environment] USER=vrivera7 
+[31178][environment] QTLIB=/usr/lib64/qt-3.3/lib 
+[31178][environment] OLDPWD=/afs/cats.ucsc.edu/users/m/vrivera7/vrivera7 
+[31178][environment] CVS_RSH=ssh 
+[31178][environment] PYTHONPATH=/opt/rh/llvm-toolset-7/root/usr/lib/python2.7/site-packages:/opt/rh/devtoolset-8/root/usr/lib64/python2.7/site-packages:/opt/rh/devtoolset-8/root/usr/lib/python2.7/site-packages 
+[31178][environment] MFLAGS= 
+[31178][environment] SSH_CLIENT=100.64.77.18 49745 22 
+[31178][environment] MAIL=/var/spool/mail/vrivera7 
+[31178][environment] MAKE_TERMOUT=/dev/pts/2 
+[31178][environment] GDFONTPATH=/usr/share/fonts/liberation 
+[31178][environment] HISTSIZE=1000 
+[31178][environment] QTINC=/usr/lib64/qt-3.3/include 
+[31178][environment] QTDIR=/usr/lib64/qt-3.3 
+[31178][environment] MAKE_TERMERR=/dev/pts/2 
+[31178][environment] LANG=en_US.UTF-8 
+[31178][environment] TERM=xterm 
+[31178][environment] IDL_DIR=/usr/local/envi/idl82 
+[31178][environment] MAKELEVEL=1 
+[31178][environment] INFER_CWD=/afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7 
+[31178][environment] INFER_ARGS= 
+[31178][environment] INFER_TOP_RESULTS_DIR=/afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/infer-out 
+[31178][environment] NO_BUCKD=1
+[31178][environment] PATH=/usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/wrappers:/usr/lib64/qt-3.3/bin:/opt/rh/llvm-toolset-7/root/usr/bin:/opt/rh/llvm-toolset-7/root/usr/sbin:/opt/rh/devtoolset-8/root/usr/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/texlive/2017/bin/x86_64-linux:/usr/local/codebench/bin:/afs/cats.ucsc.edu/users/m/vrivera7/bin:. 
+[31178][environment] INFER_OLD_PATH=/usr/lib64/qt-3.3/bin:/opt/rh/llvm-toolset-7/root/usr/bin:/opt/rh/llvm-toolset-7/root/usr/sbin:/opt/rh/devtoolset-8/root/usr/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/usr/local/texlive/2017/bin/x86_64-linux:/usr/local/codebench/bin:/afs/cats.ucsc.edu/users/m/vrivera7/bin:.
+[31178][environment] 
+
+[31204][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31204][environment] No .inferconfig file found
+[31204][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31204][environment] INFER_ARGS =   @/tmp/args.tmp.090b87  ++Contents of '/tmp/args.tmp.090b87':
+[31204][environment]                                         -c encode.c
+[31204][environment]                                       
+[31204][environment] command line arguments:   clang -c encode.cActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31204][      debug] 
+[31204][      debug] *** Beginning capture of file /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/encode.c ***
+[31204][      debug] Clang frontend action is translating and linting
+[31204][      debug] Loading the following linters files: /usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/linter_rules/linters.al
+[31204][      debug] Elapsed: 107ms.
+[31204][      debug] 
+[31204][environment] Infer log identifier is 
+
+[31211][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31211][environment] No .inferconfig file found
+[31211][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31211][environment] INFER_ARGS =   @/tmp/args.tmp.5e9216  ++Contents of '/tmp/args.tmp.5e9216':
+[31211][environment]                                         -c trie.c
+[31211][environment]                                       
+[31211][environment] command line arguments:   clang -c trie.cActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31211][      debug] 
+[31211][      debug] *** Beginning capture of file /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/trie.c ***
+[31211][      debug] Clang frontend action is translating and linting
+[31211][      debug] Loading the following linters files: /usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/linter_rules/linters.al
+[31211][      debug] Elapsed: 50.004ms.
+[31211][      debug] 
+[31211][environment] Infer log identifier is 
+
+[31217][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31217][environment] No .inferconfig file found
+[31217][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31217][environment] INFER_ARGS =   @/tmp/args.tmp.dec32f  ++Contents of '/tmp/args.tmp.dec32f':
+[31217][environment]                                         -c word.c
+[31217][environment]                                       
+[31217][environment] command line arguments:   clang -c word.cActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31217][      debug] 
+[31217][      debug] *** Beginning capture of file /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/word.c ***
+[31217][      debug] Clang frontend action is translating and linting
+[31217][      debug] Loading the following linters files: /usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/linter_rules/linters.al
+[31217][      debug] Elapsed: 58.002ms.
+[31217][      debug] 
+[31217][environment] Infer log identifier is 
+
+[31223][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31223][environment] No .inferconfig file found
+[31223][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31223][environment] INFER_ARGS =   @/tmp/args.tmp.23b868  ++Contents of '/tmp/args.tmp.23b868':
+[31223][environment]                                         -c io.c
+[31223][environment]                                       
+[31223][environment] command line arguments:   clang -c io.cActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31223][      debug] 
+[31223][      debug] *** Beginning capture of file /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/io.c ***
+[31223][      debug] Clang frontend action is translating and linting
+[31223][      debug] Loading the following linters files: /usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/linter_rules/linters.al
+[31223][      debug] Elapsed: 113ms.
+[31223][      debug] 
+[31223][environment] Infer log identifier is 
+
+[31229][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31229][environment] No .inferconfig file found
+[31229][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31229][environment] INFER_ARGS =   @/tmp/args.tmp.13f0d0  ++Contents of '/tmp/args.tmp.13f0d0':
+[31229][environment]                                         -lm -o encode encode.o trie.o word.o
+[31229][environment]                                         io.o
+[31229][environment]                                       
+[31229][environment] command line arguments:   clang -lm -o encode encode.o trie.o word.o io.oActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31229][environment] Infer log identifier is 
+
+[31237][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31237][environment] No .inferconfig file found
+[31237][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31237][environment] INFER_ARGS =   @/tmp/args.tmp.a63851  ++Contents of '/tmp/args.tmp.a63851':
+[31237][environment]                                         -c decode.c
+[31237][environment]                                       
+[31237][environment] command line arguments:   clang -c decode.cActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31237][      debug] 
+[31237][      debug] *** Beginning capture of file /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/decode.c ***
+[31237][      debug] Clang frontend action is translating and linting
+[31237][      debug] Loading the following linters files: /usr/local/infer-0.15.0/lib/infer/infer/bin/../lib/linter_rules/linters.al
+[31237][      debug] Elapsed: 100ms.
+[31237][      debug] 
+[31237][environment] Infer log identifier is 
+
+[31244][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31244][environment] No .inferconfig file found
+[31244][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31244][environment] INFER_ARGS =   @/tmp/args.tmp.e13e4b  ++Contents of '/tmp/args.tmp.e13e4b':
+[31244][environment]                                         -lm -o decode decode.o trie.o word.o
+[31244][environment]                                         io.o
+[31244][environment]                                       
+[31244][environment] command line arguments:   clang -lm -o decode decode.o trie.o word.o io.oActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31244][environment] Infer log identifier is 
+
+[31258][      phase] ============================================================
+[31258][      phase] = New infer execution begins
+[31258][      phase] ============================================================
+[31258][environment] CWD = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31258][environment] No .inferconfig file found
+[31258][environment] Project root = /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7
+[31258][environment] INFER_ARGS =   command line arguments:   infer-analyze -- makeActive checkers: biabduction (C/C++/ObjC, Java), fragment retains view (Java), liveness (C/C++/ObjC), ownership (C/C++/ObjC), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC), uninitialized variables (C/C++/ObjC)
+[31258][environment] Infer log identifier is 
+Infer version v0.16.0-1172e6d
+[31258][environment] Copyright 2009 - present Facebook. All Rights Reserved.
+[31258][environment] 
+[31258][   progress] Found 5 source files to analyze in /afs/cats.ucsc.edu/users/m/vrivera7/vrivera7/asgn7/infer-out
+[31258][environment] Parallel jobs: 2
+[31262][   progress] word.c starting
+[31261][   progress] trie.c starting
+[31261][   progress] trie.c DONE
+[31261][   progress] io.c starting
+[31262][   progress] word.c DONE
+[31262][   progress] encode.c starting
+[31261][   progress] io.c DONE
+[31261][   progress] decode.c starting
+[31262][   progress] encode.c DONE
+[31261][   progress] decode.c DONE

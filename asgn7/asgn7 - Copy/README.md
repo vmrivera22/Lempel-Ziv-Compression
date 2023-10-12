@@ -1,0 +1,1 @@
+  Type in make into the time share then type encode with the supported flags -i -o -v. The -i will allow to input text the -o will allow you to input the outfile the -v will print the stats. The default is standard input. Infer states that there are memory leaks but valgrind does not. It also states that there were resouce leaks and unused variables but all are needed to run. 
