@@ -12,7 +12,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <errno.h>
 
 #define buff_size 4096
 
@@ -53,7 +52,7 @@ int main(int argc, char **argv) {
       break;
     }
   }
-  printf("a\n");
+
   if(in == false){
   int temp_file = open("temporary.txt",  O_RDWR | O_CREAT);
   uint8_t *file_out = (uint8_t *)calloc(4096, sizeof(uint8_t));
@@ -72,7 +71,7 @@ int main(int argc, char **argv) {
   }
   int in_file;
   int out_file;
-  printf("b\n");
+
   if(in == true){
     in_file = open(input, O_RDWR);
   }
@@ -80,39 +79,27 @@ int main(int argc, char **argv) {
     in_file = open("temporary.txt", O_RDWR);
   }
   if(out == true){
-    printf("%s\n", output);
-    out_file = open(output, O_RDWR, S_IRWXU);//| O_CREAT);
-    printf("Out = %d", out_file);
-    printf("%s'\n", strerror(errno));
+    out_file = open(output, O_RDWR);
   }
   else{
     out_file = STDOUT_FILENO;
   }
-  printf("c\n");
+
   struct stat info;
   fstat(in_file, &info);
   FileHeader *header = (FileHeader*)calloc(1, sizeof(FileHeader));
   header->magic = MAGIC;
-  printf("c1\n");
   header->protection = info.st_mode;
-  printf("c1a\n");
-  printf("Out = %d", out_file);
-  printf("%s'\n", strerror(errno));
   write_header(out_file, header);
-  printf("cb\n");
   free(header);
-  printf("c1c\n");
   bool mult = false;
-  printf("c2\n");
   TrieNode *root = trie_create();
-  printf("c3\n");
   TrieNode *curr_node = root;
   TrieNode *prev_node = NULL;
-  printf("c4\n");
   uint8_t curr_sym = 0;
   uint8_t prev_sym = 0;
   uint16_t next_code = START_CODE;
-  printf("d\n");
+
   while (read_sym(in_file, &curr_sym) == true) {
     TrieNode *next_node = trie_step(curr_node, curr_sym);
     if (next_node != NULL) {
@@ -133,29 +120,23 @@ int main(int argc, char **argv) {
     }
     prev_sym = curr_sym;
   }
-  printf("e\n");
   if (curr_node != root) {
     buffer_pair(out_file, prev_node->code, prev_sym, bitlen(next_code));
     next_code = (next_code + 1) % MAX_CODE;
   }
-  printf("e1\n");
   buffer_pair(out_file, STOP_CODE, 0, bitlen(next_code));
   flush_pairs(out_file);
   if(in == false){
     remove("temporary.txt");
   }
-  printf("e2\n");
   if(display_stats == true){
   extern double bytes_in;
   extern double bytes_out;
   printf("Bytes in: %f\nBytes out: %f\nPercent: %f\n", bytes_in, bytes_out, bytes_in/bytes_out);
   printf("\n");
   }
-  printf("e3\n");
   trie_delete(root);
-  //free(root);
-  printf("e4\n");
+  free(root);
   close(in_file);
   close(out_file);
-  printf("f\n");
 }

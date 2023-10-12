@@ -26,6 +26,20 @@ static inline uint16_t swap16(uint16_t x){
   return  result;
 }
 
+// Swaps the endianness of a uint32_t .
+//
+// x: The uint32_t .
+//
+static inline uint32_t swap32 ( uint32_t x) {
+  uint32_t result = 0;
+  result |= (x & 0x000000FF) << 24;
+  result |= (x & 0x0000FF00) << 8;
+  result |= (x & 0x00FF0000) >> 8;
+  result |= (x & 0xFF000000) >> 24;
+  return result;
+}
+
+
 static  inline  uint64_t  swap64(uint64_t x) {
   uint64_t  result = 0;
   result  |= (x & 0x00000000000000FF) << 56;

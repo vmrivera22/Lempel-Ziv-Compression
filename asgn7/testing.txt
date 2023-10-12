@@ -1,0 +1,4 @@
+Hello My name is Victor Rivera.
+I am here to say hello because I am a nice person.
+This is a test file. It will determine if the program
+works with small files. Numbers: 12341234567891011.

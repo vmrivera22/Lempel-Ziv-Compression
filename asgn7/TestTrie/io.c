@@ -9,16 +9,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 #define BUFF_LIMIT 4096
 #define CHAR_BITS 8
 
-uint32_t bytes_in = 0;
-uint32_t bytes_out = 0;
+//uint32_t bytes_out = 0;
 uint32_t word_buff_index = 0;
 
-uint32_t de_bytes_in = 0;
-uint32_t de_bytes_out = 0; 
+//uint32_t de_bytes_in = 0;
+//uint32_t de_bytes_out = 0; 
 
 uint32_t word_buff_ind = 0;
 
@@ -36,50 +34,34 @@ uint8_t in_buffer[BUFF_LIMIT+1];
 uint8_t word_buff[BUFF_LIMIT+1];
 
 void read_header(int infile, FileHeader *header) {
-  printf("1\n");
   int head_size = sizeof(FileHeader);
   int check = 1;
   int t_bread = 0;
-  printf("2\n");
-  while((t_bread < head_size) && (check > 0)){
+  while((t_bread < head_size) && (check != 0)){
     check = read(infile, header+t_bread, head_size-t_bread);
     t_bread += check;
   }
-  printf("check = %d\n", check);
-  printf("%s'\n", strerror(errno));
-  printf("3\n");
-  bytes_in += t_bread;
-  printf("4\n");
   if(is_big()){
     uint16_t temp_pro = swap16(header->protection);
     uint32_t temp_mag = swap32(header->magic);
     header->protection = temp_pro;
     header->magic = temp_mag;
   }
-  printf("5\n");
   return;
 }
 
 void write_header(int outfile, FileHeader *header) {
-  printf("1\n");
   if(is_big()){
     uint16_t temp_pro = swap16(header->protection);
     uint32_t temp_mag = swap32(header->magic);
     header->protection = temp_pro;
     header->magic = temp_mag;
   }
-  printf("2\n");
   int head_size = sizeof(FileHeader);
-  printf("3\n");
-  //int check = 1;
-  //while((head_size > 0) && (check != 0)){
-  //check = write(outfile, header, head_size);
-    //head_size -= check;
-  //}
-  int check = write(outfile, header, head_size);
-  printf("check = %d\n", check);
-  printf("%s'\n", strerror(errno));
-  printf("4\n");
+  while(head_size > 0){
+    int check = write(outfile, header, head_size);
+    head_size -= check;
+  }
    return;
 }
 
@@ -94,7 +76,6 @@ bool read_sym(int infile, uint8_t *sym){
         check = read(infile, read_buffer+t_read, BUFF_LIMIT-t_read);
         t_read += check;
     }
-    de_bytes_in += t_read;
     read_sym_ind = 0;  
   }
     
@@ -152,7 +133,6 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
 void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
   uint32_t to_add = (bitlen / 8) + (CHAR_BITS / 8);
   if((buff_ind + to_add) >= BUFF_LIMIT){
-    bytes_out = bytes_out + BUFF_LIMIT;
     write(outfile, buffer, BUFF_LIMIT);
     memset(buffer, '\0', BUFF_LIMIT);
     buff_ind = 0;
@@ -174,7 +154,7 @@ void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
   // Buffer bits of the symbol strating from the LSB
   for(int j = CHAR_BITS-1; j >= 0; j--){
     temp = (((sym) & (0x1 << (j))) >> (j));
-    if(temp == 1){
+    if(temporary == 1){
       buffer[buff_index / 8] = buffer[buff_index / 8] | (0x1 << (buff_index % 8));     
     }
     buff_index++;
@@ -189,7 +169,7 @@ void flush_pairs(int outfile) {
   memset(buffer, '\0', BUFF_LIMIT);
   buff_index = 0;
   buff_ind = 0;
-  bytes_out = bytes_out + ((buff_index / 8));
+  //bytes_out = bytes_out + ((buff_index / 8));
   return;
 }
 
@@ -203,7 +183,6 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
       bread = read(infile, in_buffer+t_bread, BUFF_LIMIT-t_bread);
       t_bread += bread;
     }
-    bytes_in += t_bread;
     read_ind = 0;
     read_index = 0;
   }
@@ -280,7 +259,6 @@ void buffer_word(int outfile, Word *w) {
     if(word_buff_ind == BUFF_LIMIT){
       write(outfile, word_buff, BUFF_LIMIT);
       memset(word_buff, '\0', BUFF_LIMIT);
-      de_bytes_out = de_bytes_out + BUFF_LIMIT;
       word_buff_ind = 0;
     } 
   }
@@ -290,7 +268,7 @@ void buffer_word(int outfile, Word *w) {
 
 // Writes out any remaining symbols in the buffer.
 void flush_words(int outfile) {
-  de_bytes_out = de_bytes_out + word_buff_ind;
+  //de_bytes_out = de_bytes_out + word_buff_ind;
   write(outfile, word_buff, word_buff_ind);//If the buffer is not full but the end of the file has been reached, write out the amount of bits that the buffer has.
   memset(word_buff, '\0', BUFF_LIMIT);
   word_buff_ind = 0;
