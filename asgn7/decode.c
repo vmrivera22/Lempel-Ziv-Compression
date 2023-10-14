@@ -48,7 +48,6 @@ int main(int argc, char **argv) {
       break;
     }
   }
-  printf("a\n");
    int in_file;
    int out_file;
    if(in == true){
@@ -63,22 +62,16 @@ int main(int argc, char **argv) {
    else{
      out_file = STDOUT_FILENO;
    }
-  printf("b\n");
   FileHeader *header = (FileHeader *)calloc(1, sizeof(FileHeader));
-  printf("b11\n");
   read_header(in_file, header);
-  printf("b1\n");
   if (header->magic != MAGIC) {
     printf("Bad Magic\n");
     return 1;
   }
-  printf("b2\n");
   WordTable *table = wt_create();
-  printf("b3\n");
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
-  printf("c\n");
   while (read_pair(in_file, &curr_code, &curr_sym, bitlen(next_code)) == true) {
       table[next_code] = word_append_sym(table[curr_code], curr_sym);
       buffer_word(out_file, table[next_code]);
@@ -88,17 +81,14 @@ int main(int argc, char **argv) {
       next_code = START_CODE;
     }
   }
-  printf("d\n");
    if(display_stats == true){
   extern double de_bytes_in;
   extern double de_bytes_out;
   printf("Bytes in: %f\nBytes out: %f\nPercent: %f\n", de_bytes_in, de_bytes_out, de_bytes_in/de_bytes_out);
   printf("\n");
   }
-  printf("e\n");
   flush_words(out_file);
   close(in_file);
   close(out_file);
   wt_delete(table);
-  printf("f\n");
 }

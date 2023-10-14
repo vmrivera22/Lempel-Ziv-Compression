@@ -41,10 +41,12 @@ void trie_delete(TrieNode *n) {
   for (i = 0; i < ALPHABET; i++) {
     if (n->children[i] != NULL) {
       trie_delete(n->children[i]);
-      trie_node_delete(n->children[i]);
+      //trie_node_delete(n->children[i]);
     }
   }
-  trie_node_delete(n);
+  if(n != NULL){
+    trie_node_delete(n);
+  }
   return;
 }
 
@@ -52,6 +54,5 @@ TrieNode *trie_step(TrieNode *n, uint8_t sym) {
   if(n != NULL){
       return n->children[sym];
   }
-  return NULL;
-    
+  return NULL; 
 }
