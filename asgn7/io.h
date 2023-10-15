@@ -1,5 +1,3 @@
-//Code by Darrell Long from Assignment 7 PDF
-
 #ifndef __IO_H__
 #define __IO_H__
 

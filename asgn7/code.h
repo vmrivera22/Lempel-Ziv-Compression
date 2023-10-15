@@ -1,5 +1,3 @@
-//Code by Darrell Long Assignment 7 PDF
-
 #ifndef __CODE_H__
 #define __CODE_H__
 
