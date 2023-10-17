@@ -13,48 +13,32 @@
 #define BUFF_LIMIT 4096
 #define CHAR_BITS 8
 
-uint32_t bytes_in = 0;
-uint32_t bytes_out = 0;
-
-uint32_t de_bytes_in = 0;
-uint32_t de_bytes_out = 0; 
+uint64_t bytes_in = 0;
+uint64_t bytes_out = 0;
 
 uint8_t out_buff[BUFF_LIMIT+1];
-uint32_t out_buff_index = 0;
 uint32_t out_buff_ind = 0;
 
-uint8_t word_buff[BUFF_LIMIT+1];
-uint32_t word_buff_index = 0;
-uint32_t word_buff_ind = 0;
-
-uint32_t read_index = 0;
-uint32_t read_ind = 0;
-
-uint8_t sym_buff[BUFF_LIMIT+1];
-uint32_t sym_buff_ind = 0;
-
 uint8_t in_buff[BUFF_LIMIT+1];
+uint32_t in_buff_ind = 0;
 
+// Function reads the FileHeader of a infile.
 void read_header(int infile, FileHeader *header) {
-  int head_size = sizeof(FileHeader);
-  int check = 1;
-  int t_bread = 0;
+  bytes_in = read_buffer(header, sizeof(FileHeader), infile);
 
-  while((t_bread < head_size) && (check > 0)){
-    check = read(infile, header+t_bread, head_size-t_bread);
-    t_bread += check;
-  }
+  // If the machine is a Big Endian machine make the FileHeader Big Endian.
   if(is_big()){
     uint16_t temp_pro = swap16(header->protection);
     uint32_t temp_mag = swap32(header->magic);
     header->protection = temp_pro;
     header->magic = temp_mag;
   }
-
   return;
 }
 
+// Function writes the FileHeader to a outfile.
 void write_header(int outfile, FileHeader *header) {
+  // If the machine is a Big Endian machine make the FileHeader little Endian.
   if(is_big()){
     uint16_t temp_pro = swap16(header->protection);
     uint32_t temp_mag = swap32(header->magic);
@@ -62,141 +46,100 @@ void write_header(int outfile, FileHeader *header) {
     header->magic = temp_mag;
   }
 
-  int check = 1;
-  int t_bwrite = 0;
-  while((t_bwrite < sizeof(FileHeader)) && check != 0){
-    check = write(outfile, header+t_bwrite, sizeof(FileHeader)-t_bwrite);
-    t_bwrite += check;
-  }
-   return;
+  // Write a block size of FileHeader or until there is an error writting.
+  bytes_out = write_buffer(header, sizeof(FileHeader), outfile);
+  
+  return;
 }
 
+// Function reads a symbol from the infile and returns true if there are symbols to be read, otherwise returns false.
 bool read_sym(int infile, uint8_t *sym) {
-  int temporary;//Temporary to hold the value of syms bits.
-  if (sym_buff_ind == 0 || sym_buff_ind == BUFF_LIMIT) {//read a block of code into buffer.
-    memset(sym_buff, '\0', BUFF_LIMIT);
-    int check = 1;
-    int t_bread = 0;
-    while((t_bread < BUFF_LIMIT) && (check != 0)){
-      check = read(infile, sym_buff+t_bread, BUFF_LIMIT-t_bread);
-      t_bread += check;
-    }
-    bytes_in += t_bread;//to_read;
-    sym_buff_ind = 0;
+  // If we have not read any blocks or if we have processed all the symbols in the buffer read another block from the infile.
+  if (in_buff_ind == 0 || in_buff_ind == BUFF_LIMIT) {
+    // Read a block the size of a BUFF_LIMIT or until we reach the end of the file.
+    bytes_in += read_buffer(in_buff, BUFF_LIMIT, infile);
+    in_buff_ind = 0; // Reset the buffer index.
   }
-  for (int j = 0; j < CHAR_BITS; j++) {
-    temporary = ((sym_buff[sym_buff_ind] & (0x1 << (j))) >> (j));
-    if (temporary == 1) {//if the bit is set, set it in the buffer.
-      sym_buff[sym_buff_ind] = sym_buff[sym_buff_ind] | (0x1 << (j));
-    }
-  }
-  *sym = sym_buff[sym_buff_ind];
+
+  *sym = in_buff[in_buff_ind]; // Set sym to a symbol from the buffer that was read in.
+
   if (*sym == 0) {
-    return false;//If there is nothing left to read return false.
+    return false; // Return false if there is nothing left to read return false.
   }
-  sym_buff_ind++;
+  in_buff_ind++;
   return true;
 }
 
-
+// Function buffers pairs (code and symbol) and writes them to outfile when the buffer is full. 
 void buffer_pair(int outfile, uint16_t code, uint8_t sym, uint8_t bitlen) {
-  uint16_t temp;
+  // Process the input code.
   for (int i = 0; i < bitlen; i++) {
-    if((out_buff_index) == (BUFF_LIMIT*8)){
-      bytes_out += (out_buff_index/8);
-      write(outfile, out_buff, BUFF_LIMIT);
-      memset(out_buff, '\0', BUFF_LIMIT);
-      out_buff_index = 0;
+    // If the Buffer is full then write it to the outfile (done here since code is variable length).
+    if((out_buff_ind) == (BUFF_LIMIT*8)){
+      bytes_out += write_buffer(out_buff, BUFF_LIMIT, outfile);
+      out_buff_ind = 0;
     }
-    temp = (((code) & (0x1 << (i))) >> (i));
-    if(temp == 1){
-       out_buff[out_buff_index / 8] = out_buff[out_buff_index / 8] | (0x1 << (out_buff_index % 8));
+    uint16_t temp = (((code) & (0x1 << (i))) >> (i)); // Check to see if the bit at i is set in code.
+    if(temp == 1){ // If the bit is set then set it in the buffer at index out_buff_ind/8.
+       out_buff[out_buff_ind / 8] = out_buff[out_buff_ind / 8] | (0x1 << (out_buff_ind % 8));
     }
-    out_buff_index++;
+    out_buff_ind++; // Keeps track of the bits that have been processed for current block.
   }
 
+  // Process the input sym.
   for (int j = 0; j < CHAR_BITS; j++) {
-    if((out_buff_index) == (BUFF_LIMIT*8)){
-      bytes_out += (out_buff_index/8);
-      write(outfile, out_buff, BUFF_LIMIT);
-      memset(out_buff, '\0', BUFF_LIMIT);
-      out_buff_index = 0;
+    // If the Buffer is full then write it to the outfile (done here since code is variable length).
+    if((out_buff_ind) == (BUFF_LIMIT*8)){
+      bytes_out += write_buffer(out_buff, BUFF_LIMIT, outfile);
+      out_buff_ind = 0;
     }
-    temp = (((sym) & (0x1 << (j))) >> (j));//The same as for code but for the sym.
-    if(temp == 1){
-      out_buff[out_buff_index / 8] = out_buff[out_buff_index / 8] | (0x1 << (out_buff_index % 8));     
+    uint16_t temp = (((sym) & (0x1 << (j))) >> (j)); // Check to see if the bit at j is set in sym.
+    if(temp == 1){ // If the bit is set then set it in the buffer at index out_buff_ind/8.
+      out_buff[out_buff_ind / 8] = out_buff[out_buff_ind / 8] | (0x1 << (out_buff_ind % 8));     
     }
-    out_buff_index++;
+    out_buff_ind++;
   }
   return;
 }
 
-
+// Function writes any remaining pairs to the outfile.
 void flush_pairs(int outfile) {
-  write(outfile, out_buff, (out_buff_index / 8));
-  memset(out_buff, '\0', BUFF_LIMIT);
-  out_buff_index = 0;
+  bytes_out += write_buffer(out_buff, (out_buff_ind / 8), outfile);
   out_buff_ind = 0;
-  bytes_out = bytes_out + ((out_buff_index / 8));
   return;
 }
 
-
+// Function reads a pair from the infile and returns true if there are any pairs left to read, false otherwise.
 bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
-  if ((read_index == 0) || (read_index >= (BUFF_LIMIT*8))) {
-    memset(in_buff, '\0', BUFF_LIMIT);
-    int check = 1;
-    int t_bread = 0;
-    while((t_bread < BUFF_LIMIT) && (check > 0)){
-      check = read(infile, in_buff+t_bread, BUFF_LIMIT-t_bread);
-      t_bread += check;
-    }
-    de_bytes_in += t_bread;
-    read_index = 0;
-    read_ind = 0;
-  }
-
-  uint16_t temp_code = 0;
+  uint16_t temp_code = 0; // Code to be copied from buffer.
   for (int i = 0; i < bitlen; i++) {
-    if(read_index >=  (BUFF_LIMIT*8)){
-      memset(in_buff, '\0', BUFF_LIMIT);
-      int check = 1;
-      int t_bread = 0;
-      while((t_bread < BUFF_LIMIT) && (check > 0)){
-        check = read(infile, in_buff+t_bread, BUFF_LIMIT-t_bread);
-        t_bread += check;
-      }
-      read_index = 0;
-      read_ind = 0;
+    // If in_buff_ind has reached the end of the buffer then read a new block (done here since code is variable length).
+    if((in_buff_ind == 0) || (in_buff_ind >=  (BUFF_LIMIT*8))){
+      bytes_in += read_buffer(in_buff, BUFF_LIMIT, infile); // Read a block the size of BUFF_LIMIT or until we reach the end of the file.
+      in_buff_ind = 0;
     }
-    int binary = ((in_buff[read_index / 8] & (0x1 << (read_index % 8))) >> (read_index % 8));
-    if (binary == 1) {
+    
+    int binary = ((in_buff[in_buff_ind / 8] & (0x1 << (in_buff_ind % 8))) >> (in_buff_ind % 8));  // Check to see if the bit at in_buff_ind%8 is set in buffer.
+    if (binary == 1) { // If the bit is set then set bit i of temp_code.
       temp_code = temp_code | (0x1 << i);
     }
-    read_index++;
+    in_buff_ind++;
   }
-  read_ind += bitlen / 8;
   *code = temp_code;
-  uint8_t temp_sym = 0;
+
+  uint8_t temp_sym = 0; // Sym to be copied from buffer
   for (int j = 0; j < CHAR_BITS; j++) {
-    if(read_index >=  (BUFF_LIMIT*8)){
-      memset(in_buff, '\0', BUFF_LIMIT);
-      int check = 1;
-      int t_bread = 0;
-      while((t_bread < BUFF_LIMIT) && (check > 0)){
-        check = read(infile, in_buff+t_bread, BUFF_LIMIT-t_bread);
-        t_bread += check;
-      }
-      read_index = 0;
-      read_ind = 0;
+    // If in_buff_ind has reached the end of the buffer then read a new block (done here since code is variable length).
+    if((in_buff_ind == 0) || (in_buff_ind >=  (BUFF_LIMIT*8))){
+      bytes_in += read_buffer(in_buff, BUFF_LIMIT, infile); // Read a block the size of BUFF_LIMIT or until we reach the end of the file.
+      in_buff_ind = 0;
     }
-    int binary = ((in_buff[read_index / 8] & (0x1 << (read_index % 8))) >> (read_index % 8));
-    if (binary == 1) {
+    int binary = ((in_buff[in_buff_ind / 8] & (0x1 << (in_buff_ind % 8))) >> (in_buff_ind % 8)); // Check to see if the bit at in_buff_ind%8 is set in buffer.
+    if (binary == 1) { // If the bit is set then set bit j of temp_sym.
      temp_sym = temp_sym | (0x1 << j);
     }
-    read_index++;
+    in_buff_ind++;
   }
-  read_ind += CHAR_BITS / 8;
   *sym = temp_sym;
 
   if (*code == STOP_CODE) {
@@ -206,30 +149,58 @@ bool read_pair(int infile, uint16_t *code, uint8_t *sym, uint8_t bitlen) {
 }
 
 
-
+// Function buffers words and writes them to outfile when the buffer is full.
 void buffer_word(int outfile, Word *w) {
-  int byte_num = w->len;
-  for (int i = 0; i < byte_num; i++) {
+  // Buffer the sym to the buffer.
+  for (int i = 0; i < w->len; i++) { // Process all characters of sym.
     for (int j = 0; j < CHAR_BITS; j++) {
-      int temp = ((w->syms[i] & (0x1 << (j))) >> (j));//Keeps track if the bit is set.
-      if (temp == 1) {
-        word_buff[word_buff_ind] = word_buff[word_buff_ind] | (0x1 << (j));//Put it in the buffer.
+      int temp = ((w->syms[i] & (0x1 << (j))) >> (j)); // Check if the bit j of the byte i (of sym) is set.
+      if (temp == 1) { // If the bit in the char of sym is set then set the corresponding bit of the buffer.
+        out_buff[out_buff_ind] = out_buff[out_buff_ind] | (0x1 << (j));
       }
     }
-    word_buff_ind++;
-    if (word_buff_ind == BUFF_LIMIT) {//If the buffer is full write out the buffer.
-      write(outfile, word_buff, BUFF_LIMIT);
-      memset(word_buff, '\0', BUFF_LIMIT);
-      de_bytes_out = de_bytes_out + BUFF_LIMIT;
-      word_buff_ind = 0;
+    out_buff_ind++;
+    if (out_buff_ind == BUFF_LIMIT) { // If the buffer is full write out the buffer.
+      bytes_out += write_buffer(out_buff, BUFF_LIMIT, outfile);
+      out_buff_ind = 0;
     }
   }
   return;
 }
+
+// Function writes any remaining symbols in the buffer.
 void flush_words(int outfile) {
-  de_bytes_out = de_bytes_out + word_buff_ind;
-  write(outfile, word_buff, word_buff_ind);
-  memset(word_buff, '\0', BUFF_LIMIT);
-  word_buff_ind = 0;
+  bytes_out += write_buffer(out_buff, out_buff_ind, outfile);
+  out_buff_ind = 0;
   return;
+}
+
+// Function writes byte_num bytes from buffer to outfile.
+int write_buffer(void *buffer, int byte_num, int outfile){
+  int t_bwrite = 0;
+  int check = 1;
+  while((t_bwrite < byte_num) && (check > 0)){
+    check = write(outfile, buffer+t_bwrite, byte_num-t_bwrite);
+    t_bwrite += check;
+  }
+  if(check < 0){
+    fprintf(stderr, "%s\n", strerror(errno));
+  }
+  memset(buffer, '\0', byte_num);
+  return t_bwrite;
+}
+
+// Function reads byte_num bytes from infile to buffer.
+int read_buffer(void *buffer, int byte_num, int infile) {
+  memset(buffer, '\0', byte_num);
+  int t_bread = 0;
+  int check = 1;
+  while((t_bread < byte_num) && (check > 0)){
+    check = read(infile, buffer+t_bread, byte_num-t_bread);
+    t_bread += check;
+  }
+  if(check < 0){
+    fprintf(stderr, "%s\n", strerror(errno));
+  }
+  return t_bread;
 }

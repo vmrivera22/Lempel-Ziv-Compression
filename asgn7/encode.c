@@ -13,9 +13,9 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-#define buff_size 4096
+#define BUFF_SIZE 4096
 
-
+// Function returns the bit length of a uint16_t value.
 uint8_t bitlen(uint16_t x) {
   if (x != 0) {
     uint32_t count = 0;
@@ -29,73 +29,19 @@ uint8_t bitlen(uint16_t x) {
   }
 }
 
-int main(int argc, char **argv) {
-  char *input;
-  char *output;
-  bool in = false;
-  bool out = false;
-  int c;
-  bool display_stats = false;
-   display_stats = false;
-  while ((c = getopt(argc, argv, "vi:o:")) != -1) {
-    switch (c) {
-    case 'v':
-           display_stats = true;
-      break;
-    case 'i':
-      in = true;
-      input = optarg;
-      break;
-    case 'o':
-      out = true;
-      output = optarg;
-      break;
-    }
-  }
-  if(in == false){
-  int temp_file = open("temporary.txt",  O_RDWR | O_CREAT);
-  uint8_t *file_out = (uint8_t *)calloc(4096, sizeof(uint8_t));
-  int buffer_size = buff_size;
-  int count = 0;
-  int j;
-  while((j = read(STDIN_FILENO, file_out, 1)) > 0){
-    count++;
-    write(temp_file, file_out, 1);
-    if(count == buffer_size){
-      buffer_size = buffer_size * 2;
-      file_out = (uint8_t *)realloc(file_out, buffer_size);
-    }
-  }
-   close(temp_file);
-  }
-  int in_file;
-  int out_file;
-
-  if(in == true){
-    in_file = open(input, O_RDWR);
-  }
-  else{
-    in_file = open("temporary.txt", O_RDWR);
-  }
-  if(out == true){
-    out_file = open(output, O_RDWR);
-  }
-  else{
-    out_file = STDOUT_FILENO;
-  }
+// Write and Free header
+void encode_header(int outfile, int infile){
   struct stat info;
-  fstat(in_file, &info);
- 
-  // Write and Free header
+  fstat(infile, &info);
   FileHeader *header = (FileHeader*)calloc(1, sizeof(FileHeader));
   header->magic = MAGIC;
   header->protection = info.st_mode;
-  write_header(out_file, header);
+  write_header(outfile, header);
   free(header);
+}
 
-  bool mult = false;
-  TrieNode *root = trie_create();
- 
+// Function compresses input file.
+void compress_file(TrieNode *root, int outfile, int infile){
   TrieNode *curr_node = root;
   TrieNode *prev_node = NULL;
   TrieNode *next_node = NULL;
@@ -103,43 +49,108 @@ int main(int argc, char **argv) {
   uint8_t prev_sym = 0;
   uint16_t next_code = START_CODE;
 
-  while (read_sym(in_file, &curr_sym) == true) {  
+  // Read symbols/words from the infile until there is no more to read.
+  while (read_sym(infile, &curr_sym) == true) {  
     next_node = trie_step(curr_node, curr_sym);
-    if (next_node != NULL) {
+    if (next_node != NULL) { // If the symbol curr_sym exists as a child of curr_node then step down the trie.
       prev_node = curr_node;
       curr_node = next_node;
-    } else {
-      buffer_pair(out_file, curr_node->code, curr_sym, bitlen(next_code)); ///
-      curr_node->children[curr_sym] = trie_node_create(next_code); ///
+    } else { // If not then buffer the current sym and add it as a child of curr_node
+      buffer_pair(outfile, curr_node->code, curr_sym, bitlen(next_code));
+      curr_node->children[curr_sym] = trie_node_create(next_code);
       curr_node = root;
       next_code = next_code + 1;
     } 
-    if (next_code == MAX_CODE) {
+    if (next_code == MAX_CODE) { // If the max size of code is reached then reset the trie
       trie_reset(root);
       curr_node = root;
       next_code = START_CODE;
     }
- 
     prev_sym = curr_sym;
   }
+
+  // Buffer the last pair in the file (if it is not the root).
   if (curr_node != root) {
-    buffer_pair(out_file, prev_node->code, prev_sym, bitlen(next_code));
+    buffer_pair(outfile, prev_node->code, prev_sym, bitlen(next_code));
     next_code = (next_code + 1) % MAX_CODE;
   }
-  buffer_pair(out_file, STOP_CODE, 0, bitlen(next_code));
-  flush_pairs(out_file);
-  if(in == false){
-    remove("temporary.txt");
+
+  // Add the STOP_CODE to the end of the compressed file.
+  buffer_pair(outfile, STOP_CODE, 0, bitlen(next_code));
+  flush_pairs(outfile);
+  return;
+}
+
+// Function returns the file descriptor of the newly created temp file containing STDIN data.
+int copy_stdin(){
+  int temp_file = open("temporary.txt",  O_RDWR | O_CREAT); // O_TMPFILE
+  uint8_t *file_out = (uint8_t *)calloc(4096, sizeof(uint8_t)); // Buffer to hold stdin input before writing to file.
+  int buffer_size = BUFF_SIZE;
+  int count = 0;
+  while((read(STDIN_FILENO, file_out, 1)) > 0){ // Read from stdin
+    count++;
+    write(temp_file, file_out, 1);
+    if(count == buffer_size){ // If the buffer is full then double its size.
+      buffer_size = buffer_size * 2;
+      file_out = (uint8_t *)realloc(file_out, buffer_size);
+    }
   }
+  return temp_file;
+}
+
+int main(int argc, char **argv) {
+  char *input;
+  char *output;
+  int c;
+  bool display_stats = false;
+  int in_file = -2;
+  int out_file = -2;
+
+  // Options for program.
+  while ((c = getopt(argc, argv, "vi:o:")) != -1) {
+    switch (c) {
+    case 'v': // Option displays compression stats.
+      display_stats = true;
+      break;
+    case 'i': // Option allows the user to specify a file to compress.
+      input = optarg;
+      in_file = open(input, O_RDWR); // Open input file
+      break;
+    case 'o': // Option allows the user to specify a file to output compressed data.
+      output = optarg;
+      out_file = open(output, O_RDWR | O_TRUNC | O_CREAT, S_IRWXO, S_IRWXU); // Open output file
+      break;
+    }
+  }
+
+  if(in_file == -2)
+    in_file = copy_stdin();
+  if(out_file == -2)
+    out_file = STDOUT_FILENO; // Set the program to output to stdout.
+
+  encode_header(out_file, in_file); // Write header to out_file.
+
+  TrieNode *root = trie_create();
+  compress_file(root, out_file, in_file); // Compress the file
  
+  // Display compression stats.
   if(display_stats == true){
-  extern double bytes_in;
-  extern double bytes_out;
-  printf("Bytes in: %f\nBytes out: %f\nPercent: %f\n", bytes_in, bytes_out, bytes_in/bytes_out);
-  printf("\n");
+    //extern double bytes_in;
+    //extern double bytes_out;
+    extern uint64_t bytes_in;
+    extern uint64_t bytes_out;
+    printf("Original File: %lu B\nCompressed File: %lu B\nCompression percentage: %f%%\n", bytes_in, bytes_out, (1 - ((float)bytes_out/bytes_in))*100);
+    printf("\n");
   }
  
+  // Close files and delete trie.
   trie_delete(root);
   close(in_file);
   close(out_file);
+
+  // Remove the temp created file for stdin.
+  if(in_file == -2)
+    remove("temporary.txt");
+  
+  return 0;
 }
