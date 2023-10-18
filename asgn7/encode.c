@@ -115,6 +115,7 @@ int main(int argc, char **argv) {
     case 'i': // Option allows the user to specify a file to compress.
       input = optarg;
       in_file = open(input, O_RDWR); // Open input file
+      printf("in_file = %d\n", in_file);
       break;
     case 'o': // Option allows the user to specify a file to output compressed data.
       output = optarg;
@@ -128,6 +129,7 @@ int main(int argc, char **argv) {
   if(out_file == -2)
     out_file = STDOUT_FILENO; // Set the program to output to stdout.
 
+  printf("in_file = %d\n", in_file);
   encode_header(out_file, in_file); // Write header to out_file.
 
   TrieNode *root = trie_create();
