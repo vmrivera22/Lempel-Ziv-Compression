@@ -19,7 +19,7 @@ TrieNode *trie_node_create(uint16_t code);
 void trie_node_delete(TrieNode *n);
 
 // Function returns a Pointer to a newly initialized Trie: a root TrieNode with the code EMPTY_CODE.
-TrieNode *trie_create(void);
+TrieNode *trie_create();
 
 // Dunction resets a Trie to just the root TrieNode.
 void trie_reset(TrieNode *root);

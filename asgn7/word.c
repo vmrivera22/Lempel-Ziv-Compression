@@ -47,7 +47,7 @@ void word_delete(Word *w) {
 }
 
 // Function returns a pointer to a newly created WordTable (array of Words).
-WordTable *wt_create(void) {
+WordTable *wt_create() {
   WordTable *word = (WordTable *)calloc(UINT16_MAX - 1, sizeof(Word));
   word[EMPTY_CODE] = word_create((uint8_t *) "", 0);
   return word;

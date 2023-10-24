@@ -114,6 +114,10 @@ int main(int argc, char **argv) {
     case 'i': // Option allows the user to specify a file to compress.
       input = optarg;
       in_file = open(input, O_RDWR); // Open input file
+      if(in_file < 0){
+        fprintf(stderr, "Unable to open input file. Make sure the file exists and try again.\n");
+        exit(1);
+      }
       break;
     case 'o': // Option allows the user to specify a file to output compressed data.
       output = optarg;

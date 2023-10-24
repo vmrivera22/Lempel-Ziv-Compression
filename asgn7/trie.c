@@ -22,7 +22,7 @@ void trie_node_delete(TrieNode *n) {
 }
 
 // Function returns a Pointer to a newly initialized Trie: a root TrieNode with the code EMPTY_CODE.
-TrieNode *trie_create(void) {
+TrieNode *trie_create() {
   TrieNode *trie = trie_node_create(EMPTY_CODE);
   return trie;
 }

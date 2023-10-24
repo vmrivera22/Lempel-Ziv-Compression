@@ -21,7 +21,7 @@ Word *word_append_sym(Word *w, uint8_t sym);
 void word_delete(Word *w);
 
 // Function returns a pointer to a newly created WordTable (array of Words).
-WordTable *wt_create(void);
+WordTable *wt_create();
 
 // Function resets a WordTable to having just the empty Word.
 void wt_reset(WordTable *wt);

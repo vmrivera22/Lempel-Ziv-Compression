@@ -29,7 +29,7 @@ uint8_t bitlen(uint16_t x) {
 }
 
 // Read and check if the FileHeader is correct.
-void decode_header(infile){
+void decode_header(int infile){
   FileHeader *header = (FileHeader *)calloc(1, sizeof(FileHeader));
   read_header(infile, header);
   if (header->magic != MAGIC) {
@@ -94,6 +94,10 @@ int main(int argc, char **argv) {
     case 'i': // Option allows the user to specify a compressed file.
       input = optarg;
       in_file = open(input, O_RDWR);
+      if(in_file < 0){
+        fprintf(stderr, "Unable to open input file. Make sure the file exists and try again.\n");
+        exit(1);
+      }
       break;
     case 'o': // Option allows the user to specify a file to output the decompressed data.
       output = optarg;

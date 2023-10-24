@@ -10,7 +10,7 @@ fi
 touch "original.txt" "output.txt" "outtemp.txt" "intemp.txt" "error.txt" "diff.txt"
 
 
-file="test_files/10mb.txt"
+file="test_files/bible.txt"
 original="original.txt"
 decompressed="intemp.txt"
 compressed="outtemp.txt"
