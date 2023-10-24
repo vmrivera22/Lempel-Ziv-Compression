@@ -40,7 +40,7 @@ static inline uint32_t swap32 ( uint32_t x) {
 }
 
 // Function returns Endian conversion of the input uint64_t value.
-static  inline  uint64_t  swap64(uint64_t x) {
+static  inline  uint64_t swap64(uint64_t x) {
   uint64_t  result = 0;
   result  |= (x & 0x00000000000000FF) << 56;
   result  |= (x & 0x000000000000FF00) << 40;

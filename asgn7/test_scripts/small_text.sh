@@ -17,12 +17,22 @@ compressed="outtemp.txt"
 
 chmod 740 $original $decompressed $compressed "output.txt" "error.txt" "diff.txt"
 
+new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
+
 cp $file $original
 
+rc=$!
+
+if [[ rc -ne 0 ]]; then
+    echo "Input test file does not exist."
+    cleanup $new_files
+    exit $rc
+fi
+
 ./encode -i $original -o $compressed >> output.txt 2>>error.txt & pid1=$!
-wait
+wait $pid1
 ./decode -i $compressed -o $decompressed >> output.txt 2>>error.txt & pid2=$!
-wait
+wait $pid2
 
 rc=0
 msg=""
@@ -33,8 +43,6 @@ if [[ $diff_val -ne 0 ]]; then
     msg=$"${msg}Decompressed File differed from the original."
     rc=1
 fi
-
-new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
 
 if [[ $rc -eq 0 ]]; then
     echo "Compression and Decompression Successful."

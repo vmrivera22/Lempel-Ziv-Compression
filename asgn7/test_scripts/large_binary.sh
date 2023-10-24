@@ -7,24 +7,33 @@ if [[ `check_dir` -eq 1 ]]; then
     exit 1
 fi
 
-touch "original.txt" "output.txt" "outtemp.txt" "intemp.txt" "error.txt" "diff.txt"
+touch "original.png" "output.txt" "outtemp.png" "intemp.png" "error.txt" "diff.txt"
 
 
-file="test_files/small.txt"
-original="original.txt"
-decompressed="intemp.txt"
-compressed="outtemp.txt"
+file="test_files/large_binary.png"
+original="original.png"
+decompressed="intemp.png"
+compressed="outtemp.png"
 
 chmod 740 $original $decompressed $compressed "output.txt" "error.txt" "diff.txt"
 
+new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
+
 cp $file $original
 
-./encode -i $original -o $compressed >> output.txt 2>>error.txt & pid1=$!
-wait
-./decode -i $compressed -o $decompressed >> output.txt 2>>error.txt & pid2=$!
-wait
+rc=$!
 
-rc=0
+if [[ rc -ne 0 ]]; then
+    echo "Input test file does not exist."
+    cleanup $new_files
+    exit $rc
+fi
+
+./encode -i $original -o $compressed >> output.txt 2>>error.txt & pid1=$!
+wait $pid1
+./decode -i $compressed -o $decompressed >> output.txt 2>>error.txt & pid2=$!
+wait $pid2
+
 msg=""
 
 diff $original $decompressed > diff.txt
@@ -34,26 +43,21 @@ if [[ $diff_val -ne 0 ]]; then
     rc=1
 fi
 
-new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
-
 if [[ $rc -eq 0 ]]; then
     echo "Compression and Decompression Successful."
 else
-    cat << EOF
-    --------------------------------------------------------------------------------
-    $msg
-    --------------------------------------------------------------------------------
-    Error:
+    echo "--------------------------------------------------------------------------------"
+    echo "$msg"
+    echo "--------------------------------------------------------------------------------"
+    echo "Error:"
     cat error.txt
-    --------------------------------------------------------------------------------
-    STDOUT:
+    echo "--------------------------------------------------------------------------------"
+    echo "STDOUT:"
     cat output.txt
-    --------------------------------------------------------------------------------
-    Diff:
+    echo "--------------------------------------------------------------------------------"
+    echo "Diff:"
     cat diff.txt
-EOF
 fi
-#kill -9 $pid1 $pid2
 
 cleanup $new_files
 

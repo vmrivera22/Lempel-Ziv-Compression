@@ -33,9 +33,11 @@ void decode_header(infile){
   FileHeader *header = (FileHeader *)calloc(1, sizeof(FileHeader));
   read_header(infile, header);
   if (header->magic != MAGIC) {
+    free(header);
     printf("Bad Magic\n");
     exit(1);
   }
+  free(header);
   return;
 }
 
@@ -49,7 +51,7 @@ void decompress_file(WordTable *table, int outfile, int infile){
   while (read_pair(infile, &curr_code, &curr_sym, bitlen(next_code)) == true) {
     table[next_code] = word_append_sym(table[curr_code], curr_sym); // Append the word/sym to the WordTable.
     buffer_word(outfile, table[next_code]); // Buffer the word - write to outfile.
-    next_code = next_code + 1;
+    next_code += 1;
     if (next_code == MAX_CODE) { // If the max size of code is reached then reset the WordTable. 
       wt_reset(table);
       next_code = START_CODE;
@@ -96,7 +98,7 @@ int main(int argc, char **argv) {
       break;
     case 'o': // Option allows the user to specify a file to output the decompressed data.
       output = optarg;
-      out_file = open(output, O_RDWR | O_TRUNC | O_CREAT, S_IRWXO, S_IRWXU);
+      out_file = open(output, O_RDWR | O_TRUNC | O_CREAT, 0666);
       break;
     }
   }

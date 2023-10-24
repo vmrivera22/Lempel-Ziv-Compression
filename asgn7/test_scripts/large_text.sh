@@ -10,19 +10,29 @@ fi
 touch "original.txt" "output.txt" "outtemp.txt" "intemp.txt" "error.txt" "diff.txt"
 
 
-file="test_files/small.txt"
+file="test_files/bible.txt"
 original="original.txt"
 decompressed="intemp.txt"
 compressed="outtemp.txt"
 
 chmod 740 $original $decompressed $compressed "output.txt" "error.txt" "diff.txt"
 
+new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
+
 cp $file $original
 
+rc=$!
+
+if [[ rc -ne 0 ]]; then
+    echo "Input test file does not exist."
+    cleanup $new_files
+    exit $rc
+fi
+
 ./encode -i $original -o $compressed >> output.txt 2>>error.txt & pid1=$!
-wait
+wait $pid1
 ./decode -i $compressed -o $decompressed >> output.txt 2>>error.txt & pid2=$!
-wait
+wait $pid2
 
 rc=0
 msg=""
@@ -34,26 +44,21 @@ if [[ $diff_val -ne 0 ]]; then
     rc=1
 fi
 
-new_files="$original $decompressed $compressed output.txt error.txt diff.txt"
-
 if [[ $rc -eq 0 ]]; then
     echo "Compression and Decompression Successful."
 else
-    cat << EOF
-    --------------------------------------------------------------------------------
-    $msg
-    --------------------------------------------------------------------------------
-    Error:
+    echo "--------------------------------------------------------------------------------"
+    echo "$msg"
+    echo "--------------------------------------------------------------------------------"
+    echo "Error:"
     cat error.txt
-    --------------------------------------------------------------------------------
-    STDOUT:
+    echo "--------------------------------------------------------------------------------"
+    echo "STDOUT:"
     cat output.txt
-    --------------------------------------------------------------------------------
-    Diff:
+    echo "--------------------------------------------------------------------------------"
+    echo "Diff:"
     cat diff.txt
-EOF
 fi
-#kill -9 $pid1 $pid2
 
 cleanup $new_files
 
