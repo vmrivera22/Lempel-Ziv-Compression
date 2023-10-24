@@ -48,9 +48,8 @@ void compress_file(TrieNode *root, int outfile, int infile){
   uint8_t curr_sym = 0;
   uint8_t prev_sym = 0;
   uint16_t next_code = START_CODE;
-
   // Read symbols/words from the infile until there is no more to read.
-  while (read_sym(infile, &curr_sym) == true) {  
+  while (read_sym(infile, &curr_sym) == true) {
     next_node = trie_step(curr_node, curr_sym);
     if (next_node != NULL) { // If the symbol curr_sym exists as a child of curr_node then step down the trie.
       prev_node = curr_node;
@@ -60,7 +59,7 @@ void compress_file(TrieNode *root, int outfile, int infile){
       curr_node->children[curr_sym] = trie_node_create(next_code);
       curr_node = root;
       next_code = next_code + 1;
-    } 
+    }
     if (next_code == MAX_CODE) { // If the max size of code is reached then reset the trie
       trie_reset(root);
       curr_node = root;
@@ -129,7 +128,6 @@ int main(int argc, char **argv) {
     out_file = STDOUT_FILENO; // Set the program to output to stdout.
 
   encode_header(out_file, in_file); // Write header to out_file.
-
   TrieNode *root = trie_create();
   compress_file(root, out_file, in_file); // Compress the file
  

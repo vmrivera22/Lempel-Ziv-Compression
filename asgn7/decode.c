@@ -46,7 +46,6 @@ void decompress_file(WordTable *table, int outfile, int infile){
   uint8_t curr_sym = 0;
   uint16_t curr_code = 0;
   uint16_t next_code = START_CODE;
-
   // Read pairs from the file until there are no more pairs to read.
   while (read_pair(infile, &curr_code, &curr_sym, bitlen(next_code)) == true) {
     table[next_code] = word_append_sym(table[curr_code], curr_sym); // Append the word/sym to the WordTable.
@@ -109,11 +108,9 @@ int main(int argc, char **argv) {
     out_file = STDOUT_FILENO;
 
   decode_header(in_file); // read and check FileHeader.
-
   // Create a word table
   WordTable *table = wt_create();
   decompress_file(table, out_file, in_file); // Decompress the file.
-
   // Display decompression stats.
   if(display_stats == true){
     extern uint64_t bytes_in;

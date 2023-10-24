@@ -11,13 +11,13 @@ Word *word_create(uint8_t *syms, uint64_t len) {
   Word *w = (Word *)calloc(1, sizeof(Word));
   if(len != 0){ // If the syms is not an empty word, then allocate the apporiate memory (len * uint8_t).
     w->syms = (uint8_t *)calloc(len, sizeof(uint8_t));
+    memcpy(w->syms, syms, len);
   }
   else{ // If the sym is an empty word then allocate space for one uint8_t (for the '\0' character)./////////
-    w->syms = (uint8_t *)calloc(1, sizeof(uint8_t));
+    w->syms = NULL;//(uint8_t *)calloc(1, sizeof(uint8_t));
   }
 
   // Copy the sym word and its length to the Word data structure
-  memcpy(w->syms, syms, len);
   w->len = len;
   return w;
 }
@@ -25,8 +25,11 @@ Word *word_create(uint8_t *syms, uint64_t len) {
 // Function returns a New Word from the specified Word appended with a symbol.
 Word *word_append_sym(Word *w, uint8_t sym) {
   Word *appended_word = word_create(w->syms, w->len); // Create the word that will contain the appended word.
-  if(appended_word->syms[0] != '\0'){ // If the input word w was not an empty word than reallocate its space to make room for sym.
+  if(appended_word->syms != NULL){ // If the input word w was not an empty word than reallocate its space to make room for sym.
     appended_word->syms = (uint8_t *)realloc(appended_word->syms, sizeof(uint8_t) * (appended_word->len + 1));
+  }
+  else{
+    appended_word->syms = (uint8_t *)calloc(1, sizeof(uint8_t));
   }
   // Append sym and increase the length of the word.
   appended_word->len = appended_word->len + 1;

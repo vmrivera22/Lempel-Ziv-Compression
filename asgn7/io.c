@@ -22,6 +22,8 @@ uint32_t out_buff_ind = 0;
 uint8_t in_buff[BUFF_LIMIT+1];
 uint32_t in_buff_ind = 0;
 
+int check_end = BUFF_LIMIT;
+
 // Function reads the FileHeader of a infile.
 void read_header(int infile, FileHeader *header) {
   bytes_in = read_buffer(header, sizeof(FileHeader), infile);
@@ -57,16 +59,22 @@ bool read_sym(int infile, uint8_t *sym) {
   // If we have not read any blocks or if we have processed all the symbols in the buffer read another block from the infile.
   if (in_buff_ind == 0 || in_buff_ind == BUFF_LIMIT) {
     // Read a block the size of a BUFF_LIMIT or until we reach the end of the file.
-    bytes_in += read_buffer(in_buff, BUFF_LIMIT, infile);
+    check_end = read_buffer(in_buff, BUFF_LIMIT, infile);
+    if(check_end == 0){
+      return false;
+    }
+    bytes_in += check_end;
     in_buff_ind = 0; // Reset the buffer index.
   }
 
   *sym = in_buff[in_buff_ind]; // Set sym to a symbol from the buffer that was read in.
-
-  if (*sym == 0) {
-    return false; // Return false if there is nothing left to read return false.
-  }
   in_buff_ind++;
+  if(check_end < BUFF_LIMIT){
+    check_end -= 1;
+  }
+  if(check_end == -1){
+    return false;
+  }
   return true;
 }
 
